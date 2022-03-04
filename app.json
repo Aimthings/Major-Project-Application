@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "SummariserApp",
+    "slug": "SummariserApp",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "SummariserApp"
+}
