@@ -1,4 +1,4 @@
-# TLDWrite <a href="http://tld-write.herokuapp.com/" target="_blank">[Live]</a>
+# TLDWrite
 
 ## Overview
 <b>[Web App] [Mobile App] [Browser Extension]</b> <br/>
