@@ -5,7 +5,13 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.amit1916.SummariserApp"
+    },
+    "ios": {
+      "bundleIdentifier": "com.amit1916.SummariserApp"
+    }
   },
   "name": "SummariserApp"
 }
