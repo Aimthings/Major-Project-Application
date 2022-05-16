@@ -18,26 +18,42 @@ const {primary, secondary, tertiary, darkLight, brand, green, red} = Colors;
 export const StyledContainer = styled.View`
     flex: 1;
     padding: 25px;
-    padding-top: ${StatusBarHeight + 10}px ;
+    padding-top: ${StatusBarHeight + 30}px ;
     background-color: ${primary};
 
     ${(props) => props.signup ? `
         padding-top: ${StatusBarHeight + 70}px ;
     `:null}
+
     ${(props) => props.welcome ? `
-    padding-top: ${StatusBarHeight + 70}px ;
-`:null}
+    padding-top: ${StatusBarHeight + 80}px ;
+    `:null}
+ 
+    ${(props) => props.FileUploader ? `
+    padding-top: ${StatusBarHeight + 60}px ;
+    `:null}
+    
 `;
 
 export const InnerContainer = styled.View`
     flex: 1;
     width: 100%;
     align-items: center;
+
+    ${(props) => props.welcome ? `
+    position: absolute;
+    `:null}
+
 `;
 
 export const PageLogo = styled.Image`
     width: 250px;
     height: 170px;
+
+    ${(props) => props.welcome ? `
+    width: 90px;
+    height: 90px;
+    `:null}
 `;
 
 export const PageTitle = styled.Text`
@@ -48,7 +64,7 @@ export const PageTitle = styled.Text`
     padding: 10px;
 
     ${(props) => props.welcome ? `
-        font-size: 35px;
+        font-size: 30px;
     `:null}
 `;
 
@@ -60,9 +76,10 @@ export const SubTitle = styled.Text`
     color: ${tertiary};
 
     ${(props) => props.welcome ? `
-    margin-bottom: 5px;
-    font-weight: normal;
+        margin:2% 0 1% 0;
+        letter-spacing: 0.2px;
     `:null}
+
 `;
 
 export const StyledFormArea = styled.View`
@@ -116,6 +133,24 @@ export const StyledButton = styled.TouchableOpacity`
     flex-direction: row;
     justify-content: center;
     `:null}
+
+    ${(props) => props.welcome == true ? `
+    padding:7px;
+    height:40px;
+    margin:10px 20px 2px 0px;
+    `:null}
+
+    ${(props) => props.FileUploader == true ? `
+    margin:10%;
+    height:10%;
+    width:70%;
+    `:null}
+
+`;
+
+export const StyledButtonParent = styled.TouchableOpacity`
+    flex-direction:row;
+    justify-content:space-between;
 `;
 
 export const ButtonText = styled.Text`
@@ -124,6 +159,11 @@ export const ButtonText = styled.Text`
 
     ${(props) => props.google == true ? `
     padding-left: 12px;
+    `:null}
+
+    ${(props) => props.FileUploader == true ? `
+    font-size: 18px;
+    font-weight:bold;
     `:null}
 `;
 
@@ -145,6 +185,7 @@ export const ExtraView = styled.View`
     flex-direction: row;
     align-items: center;
     padding: 10px;
+    margin-bottom:50%;
 `;
 
 export const ExtraText = styled.Text`
@@ -152,6 +193,14 @@ export const ExtraText = styled.Text`
     align-content: center;
     color: ${tertiary};
     font-size: 15px;
+
+    ${(props) => props.processing == true ? `
+    margin-bottom:40%;
+    font-size:20px;
+    font-weight:bold;
+    color: ${red};
+    `:null}
+
 `;
 
 export const TextLink = styled.TouchableOpacity`
