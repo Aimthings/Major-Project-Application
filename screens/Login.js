@@ -60,7 +60,7 @@ const Login = ({navigation}) =>{
             if(status !== 'SUCCESS'){
                 handleMessage(message,status);
             }else{
-                navigation.navigate('Welcome',{...data[0]});
+                navigation.navigate('FileUploader',{...data[0]});
             }
             setSubmitting(false);
         })
@@ -95,7 +95,7 @@ const Login = ({navigation}) =>{
 
                     setTimeout(() =>{ 
                     handleMessage(null);
-                    navigation.navigate('Welcome', {email, name, photoUrl})
+                    navigation.navigate('FileUploader', {email, name, photoUrl})
                     }, 1000);
                     
                 }else{
@@ -113,7 +113,7 @@ const Login = ({navigation}) =>{
      
 
     return (
-    <KeyboardAvoidingWrapper>
+        
        <StyledContainer>
            <StatusBar style="dark" />
            <InnerContainer>
@@ -194,7 +194,6 @@ const Login = ({navigation}) =>{
            </Formik>
            </InnerContainer>
        </StyledContainer>
-    </KeyboardAvoidingWrapper>
     );
 }
 

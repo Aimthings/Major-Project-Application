@@ -29,8 +29,6 @@ import {View, ActivityIndicator} from 'react-native';
 
 import axios from 'axios';
 
-import KeyboardAvoidingWrapper from '../components/keyboardAvoidingWrapper';
-
 import {Octicons, Ionicons} from '@expo/vector-icons';
 
 const {primary, brand, darkLight} = Colors;
@@ -53,7 +51,7 @@ const Signup = ({navigation}) =>{
             if(status !== 'SUCCESS'){
                 handleMessage(message, status);
             }else{
-                navigation.navigate('Welcome',{...data});
+                navigation.navigate('FileUploader',{...data});
             }
             setSubmitting(false);
         })
@@ -70,11 +68,9 @@ const Signup = ({navigation}) =>{
     }
     
     return (
-    <KeyboardAvoidingWrapper>
        <StyledContainer signup={true}>
            <StatusBar style="dark" />
            <InnerContainer>
-               {/*<PageLogo resizeMode="cover" source={}/>*/}
                <PageTitle>TLD Write</PageTitle>
                <SubTitle>Account Signup</SubTitle>
             <Formik
@@ -166,7 +162,7 @@ const Signup = ({navigation}) =>{
            </Formik>
            </InnerContainer>
        </StyledContainer>
-    </KeyboardAvoidingWrapper>
+    
     );
 }
 
