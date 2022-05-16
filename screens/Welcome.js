@@ -1,27 +1,53 @@
 import React,{useState} from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import axios from "axios";
+import { ScrollView, StyleSheet } from "react-native";
 
 import {
   StyledContainer,
   StyledButton,
   ButtonText,
-  Line,
-  ExtraView,
   ExtraText,
-  InnerContainer
+  InnerContainer,
+  StyledButtonParent,
+  PageLogo,
+  PageTitle,
+  ExtraView,
+  SubTitle,
 }from './../components/styles';
 
 import * as DocumentPicker from "expo-document-picker";
-import KeyboardAvoidingWrapper from "../components/keyboardAvoidingWrapper";
 
-export default function Welcome({navigation}) {
+const SPEECH_TO_TEXT = 'Speech To Text Converter';
+const SPEECH_TO_TEXT_SUB='Transcript Form';
+const TRANSCRIPT_SUMMARISE= 'Transcript Summariser';
+const SUMMARISER_SUB='Summary';
+const MEETING_SUMMARISE= 'Meeting Summariser';
+
+export default function Welcome({route,navigation}) {
+
   const [singleFile, setSingleFile] = useState(null);
+  const [isDataPending,setDataPending]=useState(false);
+  const [text,setText]=useState(null);
+  
+  const {endpoint} = route.params;
+
+  let title= SPEECH_TO_TEXT;
+  let imageSource=require('../assets/mic.png');
+  let subtitle=SUMMARISER_SUB;
+
+  if(endpoint==='textsummarisation'){
+    title=TRANSCRIPT_SUMMARISE;
+    imageSource=require('../assets/summary.jpg')
+  }else if(endpoint==='meetingsummarisation'){
+    title=MEETING_SUMMARISE;
+    imageSource=require('../assets/logo.jpg')
+  }else{
+    subtitle=SPEECH_TO_TEXT_SUB;
+  }
  
   const uploadFile = async () => {
     // Check if any file is selected or not
     if (singleFile != null) {
-      // If file selected then create FormData
+      
       const {mimeType,name,size,uri}=singleFile;
       const file={
         type:mimeType,
@@ -29,56 +55,46 @@ export default function Welcome({navigation}) {
         size,
         uri
       }
-      // Please change file upload URL
-      const data = new FormData();
-      console.log(data)
-      data.append('file', file);
       
-      const config = {
-          headers: {
-              'content-type':'application/x-www-form-urlencoded'
-          }
-      }
-      // const getParams = (obj) => {
-        // const params = new URLSearchParams();
-        // console.log(params)
-        // const keys = Object.keys(obj);
-        // for(let k of keys){
-        //     params.append(k, obj[k]);
-        // }
-        // return params;
-      // }
-     
-    let endpoint = "speechtotext";
-    let downloadName = endpoint === "speechtotext" ? "transcript" : "summary";
-    
+      const data = new FormData();
+      data.append('file',file);
+           
     try{
-      // console.log(data.get('file'))
-      const response = await axios.post(`http://172.31.66.18:8080/${endpoint}`, data, config);
-  
-      if(response?.data) {                
-          const content = response.data.content;
-          const filename = `${file.name.slice(0,-4)}_${downloadName}.txt`;
+      setDataPending(true);
+      let response= await fetch(
+        `http://172.31.66.18:8080/${endpoint}`,
+        {
+          method:'post',
+          body:data,
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        },
+      )
+      .then( response =>response.json())
+      .then( function(data){
+        if(data)
+        {
+          const content = data;
+          alert('Respone received');
+          setDataPending(false);
+          setText(content)
+        } else {
 
-          const blob = new Blob([content], {
-          type: "text/plain;charset=utf-8"
-          });
-
-          saveAs(blob, filename);
-          alert('Upload Successful');
-
-      } else {
           alert('Please Select File first');
           throw new Error(response);
-      }  
-    }catch(e) {
-      if (e.response && e.response.data) {
-          console.log(e.response.data.message); // some reason error message
-      
-      } else {
-          console.log(e);
+
+        }  
+       })
+      }catch(e) {
+        if (e.response && e.response.data) {
+
+            alert(e.response.data.message); // some reason error message
+        } else {
+
+            console.log(e);
+        }
       }
-    }
   };
 }
 
@@ -86,54 +102,67 @@ export default function Welcome({navigation}) {
     // Opening Document Picker to select one file
     try {
         let res = await DocumentPicker.getDocumentAsync({});
-        
-        // Printing the log realted to the file
-        // console.log('res : ' + JSON.stringify(res));
-        // Setting the state to show single file attributes
+    
         setSingleFile(res);
+        alert("File selected, Click on upload to upload the file to server");
+
       } catch (err) {
+
         setSingleFile(null);
       }
   };
 
+  const clearText =()=>{
+
+    setText(null);
+    setSingleFile(null);
+    setDataPending(false);
+  }
+
   return (
-    <KeyboardAvoidingWrapper>
-      <StyledContainer>
+      <StyledContainer welcome>
         <InnerContainer>
-        <View style={{ alignItems: 'center' }}>
-        <ExtraText style={{ fontSize: 30, textAlign: 'center' }}>
-          React Native File Upload Example
-        </ExtraText>
-        <ExtraText
-          style={{
-            fontSize: 25,
-            marginTop: 20,
-            marginBottom: 30,
-            textAlign: 'center',
-          }}>
-          www.aboutreact.com
-        </ExtraText>
-      </View>
-      {singleFile != null ? (
-        <ExtraText>
-          File Name: {singleFile.name ? singleFile.name : ''}
-          {'\n'}
-          Type: {singleFile.type ? singleFile.type : ''}
-          {'\n'}
-          File Size: {singleFile.size ? singleFile.size : ''}
-          {'\n'}
-          URI: {singleFile.uri ? singleFile.uri : ''}
-          {'\n'}
-        </ExtraText>
-      ) : null}
-      <StyledButton onPress={selectFile}>
-          <ButtonText>Select File</ButtonText>
-      </StyledButton>
-      <StyledButton onPress={uploadFile}>
-          <ButtonText>Upload File</ButtonText>
-      </StyledButton>
+
+        <PageTitle welcome>{title}</PageTitle>
+          
+        <PageLogo resizeMode="cover" source={imageSource} welcome/>
+        <StyledButtonParent disabled>
+            <StyledButton onPress={selectFile} welcome>
+                <ButtonText>Select File</ButtonText>
+            </StyledButton>
+            <StyledButton onPress={uploadFile} disabled={!singleFile} welcome>
+                <ButtonText>Upload File</ButtonText>
+            </StyledButton>
+            <StyledButton onPress={clearText} disabled={!text} welcome>
+                <ButtonText >Reset</ButtonText>
+            </StyledButton>       
+        </StyledButtonParent>
+
+        <StyledButtonParent transcript>
+        <SubTitle welcome>
+          {subtitle}
+        </SubTitle>
+        </StyledButtonParent>
+
+        <ExtraView>
+        {isDataPending?
+          <ExtraText processing>
+            Please wait data is processing
+            </ExtraText>:null}    
+          <ScrollView style={styles.scrollView}>
+          {text?<ExtraText>
+            {text}
+          </ExtraText>:null}
+          </ScrollView>
+        </ExtraView>
+
         </InnerContainer>
       </StyledContainer>
-    </KeyboardAvoidingWrapper>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollView:{
+    height: 350
+  }
+})
